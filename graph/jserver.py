@@ -20,17 +20,14 @@ class ServerServices(object):
   
   @request
   def increment(self,graph):
-    graphs = json.loads(graph, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-    
+    graphs = json.loads(graph)
     print("incrementing graph...")
-    graphs._replace(val=1)
-    print(graphs.val, type(graphs.val))
-    length=(len(graphs.children))
-    for graph in graphs.children:
-#        graph.val =1
-        print(graph.val , type(graph.val))
-            
-    return graphs
+    items=graphs['children'] 
+    graphs['val']+=1
+    for item in items:
+        print (item['name'])
+        item['val']+=1
+    return graphs    
     
     
 #    return (x.children[0)
