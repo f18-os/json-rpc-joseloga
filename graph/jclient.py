@@ -16,20 +16,23 @@ rpc = JSONRpc(s,framing_cls=JSONFramingNone)
 server =  rpc.get_peer_proxy()
 # Execute in server:
 
+#here we create the data structure a root with 3 childs
 leaf1 = node("leaf1")
 leaf2 = node("leaf2")
-
 root = node("root", [leaf1, leaf1, leaf2])
 
 print("graph before increment")
 root.show()
 
-print(server.increment(root.convertToJSON()))
-# "!dlroW olleH"
-#print(asa)
+#here we received the graph incremented from the server
+jsonGraph=server.increment(root.convertToJSON())
+print (jsonGraph)
 
-print(server.nop({1:[2,3]}))
+#here we update the graph with the new info from the 
+updateGraph(root,json.loads(jsonGraph))
 
+print("graph after increment")
+root.show()
 rpc.close() # Closes the socket 's' also
 
 

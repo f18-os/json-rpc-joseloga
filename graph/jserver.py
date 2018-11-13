@@ -2,13 +2,19 @@
 # https://github.com/seprich/py-bson-rpc/blob/master/README.md#quickstart
 
 import socket, json
-from collections import namedtuple
 from bsonrpc import JSONRpc
 from bsonrpc import request, service_class
 from bsonrpc.exceptions import FramingError
 from bsonrpc.framing import (
 	JSONFramingNetstring, JSONFramingNone, JSONFramingRFC7464)
 
+#recusively increment the values 
+#of each key in the diccionary
+def inc(graph):
+    graph['val']+=1
+    for item in graph['children']:
+        print (item['name'])
+        inc(item)
 
 # Class providing functions for the client to use:
 @service_class
@@ -20,23 +26,17 @@ class ServerServices(object):
   
   @request
   def increment(self,graph):
-    graphs = json.loads(graph)
+    graphs = json.loads(graph)              #convert JSON format to diccionary
     print("incrementing graph...")
-    items=graphs['children'] 
-    graphs['val']+=1
-    for item in items:
-        print (item['name'])
-        item['val']+=1
-    return graphs    
-    
-    
-#    return (x.children[0)
-    
+    inc(graphs)
+    print("Done")
+    graph = json.dumps(graphs)               #convert back to JSON
+    return graph    
+
   @request
   def nop(self, txt):
     print(txt)
     return txt
-
 
 # Quick-and-dirty TCP Server:
 ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
